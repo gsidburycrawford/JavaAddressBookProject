@@ -3,12 +3,12 @@ import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import java.util.*;
 
 public class AddressBook {
-    private HashMap<String, Address> addressBook;
+    private ArrayList<Address> addressBook;
     public static Scanner scanner = new Scanner(System.in);
 
 
     public AddressBook() {
-        this.addressBook = new HashMap<>();
+        this.addressBook = new ArrayList<Address>();
     }
     public void addAddress() {
         System.out.println("First Name: ");
@@ -20,19 +20,26 @@ public class AddressBook {
         System.out.println("Email Address: ");
         String email = scanner.nextLine();
         Address address = new Address(firstName,lastName,email,phone);
-        this.addressBook.put(address.getEmail(), address);
+        this.addressBook.add(address);
         System.out.println("Added new entry!");
     }
 
     public  void removeAddress() {
         System.out.println("Enter an entry's email to remove: ");
         String email = scanner.nextLine();
-        if (this.addressBook.containsKey(email)) {
-            System.out.println("Deleted the following entry: \n");
-            this.addressBook.get(email).printAddress();
-            this.addressBook.remove(email);
-        } else {
-            System.out.println("No address found with that record.");
+        boolean removedAddress = false;
+        int i = 0;
+        for (Address address: this.addressBook) {
+            if (address.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("Deleted the following entry: \n");
+                address.printAddress();
+                this.addressBook.remove(i);
+                removedAddress = true;
+            }
+            i++;
+        }
+        if (!removedAddress) {
+                System.out.println("No address found with that record.");
         }
     }
 
@@ -46,10 +53,10 @@ public class AddressBook {
             System.out.println("Chose a search type: ");
             int searchType = scanner.nextInt();
             System.out.println("Enter your search: ");
-            String searchQuery = scanner.nextLine();
+            String searchQuery = scanner.next();
             switch (searchType) {
                 case 1:
-                    for (Address address : this.addressBook.values()) {
+                    for (Address address : this.addressBook) {
                         if (address.getFirstName().equalsIgnoreCase(searchQuery)) {
                             found = true;
                             address.printAddress();
@@ -57,7 +64,7 @@ public class AddressBook {
                     }
                     break;
                 case 2:
-                    for (Address address : this.addressBook.values()) {
+                    for (Address address : this.addressBook) {
                         if (address.getLastName().equalsIgnoreCase(searchQuery)) {
                             found = true;
                             address.printAddress();
@@ -65,7 +72,7 @@ public class AddressBook {
                     }
                     break;
                 case 3:
-                    for (Address address : this.addressBook.values()) {
+                    for (Address address : this.addressBook) {
                         if (address.getPhone().equalsIgnoreCase(searchQuery)) {
                             found = true;
                             address.printAddress();
@@ -73,7 +80,7 @@ public class AddressBook {
                     }
                     break;
                 case 4:
-                    for (Address address : this.addressBook.values()) {
+                    for (Address address : this.addressBook) {
                         if (address.getEmail().equalsIgnoreCase(searchQuery)) {
                             found = true;
                             address.printAddress();
@@ -95,7 +102,7 @@ public class AddressBook {
     }
 
     public  void printAddresses() {
-        for (Address address: this.addressBook.values()) {
+        for (Address address: this.addressBook) {
             address.printAddress();
         }
     }
